@@ -1,0 +1,38 @@
+{
+  "projects": [
+    {
+      "tags": ["TypeScript", "React", "Music"],
+      "title": "Configurable Music Label Website Template - easy to use and customize",
+      "url": "https://github.com/c0okiemf/music-website",
+      "image": "/img/music.png"
+    },
+    {
+      "tags": ["Go", "Vue", "Accounting"],
+      "title": "Personal Accounting App - record and view transactions",
+      "url": "https://github.com/c0okiemf/immudb-accounting-app",
+      "image": "/img/accounting.png"
+    },
+    {
+      "tags": ["TypeScript", "React Native", "Chat"],
+      "title": "Simplest Mobile Chat App - chat with your friends",
+      "url": "https://github.com/c0okiemf/super-basic-chat",
+      "image": "/img/native.png"
+    }
+  ],
+  "social": [
+    {
+      "label": "Email",
+      "url": "mailto:igorpichugindev@proton.me"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/pichugin-igor/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/c0okiemf/"
+    }
+  ],
+  "email": "igorpichugindev@proton.me",
+  "avatar": "/img/avatar.jpg"
+}
