@@ -17,6 +17,15 @@
       "title": "Simplest Mobile Chat App - chat with your friends",
       "url": "https://github.com/c0okiemf/super-basic-chat",
       "image": "/img/native.png"
+    },
+    {
+      "tags": [
+        "TypeScript",
+        "Vue",
+        "Portfolio"
+      ],
+      "title": "...and this very portfolio - built with Vue and TypeScript",
+      "url": "https://github.com/c0okiemf/portfolio"
     }
   ],
   "social": [
