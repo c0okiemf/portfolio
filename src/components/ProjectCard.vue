@@ -26,7 +26,7 @@ const { element, style } = useScrollEffect({
       <h2>{{ project.title }}</h2>
       <SuperButton type="inverted" :href="project.url"> View code </SuperButton>
     </div>
-    <img :src="project.image" :alt="project.title" />
+    <img v-if="project.image" :src="project.image" :alt="project.title" />
   </div>
 </template>
 

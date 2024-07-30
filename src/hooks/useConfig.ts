@@ -4,7 +4,7 @@ export interface Project {
   tags: string[];
   title: string;
   url: string;
-  image: string;
+  image?: string;
 }
 
 interface SocialItem {
