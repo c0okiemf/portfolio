@@ -18,56 +18,64 @@ const onClick = () => {
 </script>
 
 <template>
-  <div v-if="config.v1url" class="corner">
-    <button @click="onClick">See V1</button>
-  </div>
+  <button @click="onClick">
+    <div v-if="config.v1url" class="corner">
+      <div class="label">See V1</div>
+    </div>
+  </button>
 </template>
 
 <style scoped lang="scss">
+button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
 .corner {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100px;
-  height: 100px;
   z-index: 1;
 
   @media (max-width: $desktop-breakpoint) {
     display: none;
   }
 
-  &:before {
+  &:before,
+  &:after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     border-style: solid;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
     width: 0;
-    border-color: transparent rgba(255, 255, 255, 1) rgba(255, 255, 255, 1) transparent;
     border-radius: 0px 0 20px 0;
     transition:
       border-width 0.2s,
       border-radius 0.2s;
     border-width: 30px;
   }
-  &:hover:before {
+  &:before {
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+    border-color: transparent $color-background-secondary $color-background-secondary transparent;
+    z-index: 1;
+  }
+  &:after {
+    border-color: black transparent transparent black;
+    z-index: -1;
+  }
+  &:hover:before,
+  &:hover:after {
     border-width: 50px;
     border-radius: 0px 0 30px 0;
   }
-
-  button {
+  .label {
     position: absolute;
     top: 20px;
     left: 10px;
-    z-index: -1;
     color: $color-text-main;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  &:hover button {
-    z-index: 1;
+    white-space: nowrap;
   }
 }
 </style>
