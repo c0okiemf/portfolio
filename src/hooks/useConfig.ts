@@ -17,13 +17,13 @@ interface Config {
   social: SocialItem[];
   email: string | undefined;
   avatar: string | undefined;
+  v1url: string | undefined;
 }
 
 export const useConfig = (): Config => {
   return {
+    ...configJson,
     projects: configJson.projects ?? [],
-    social: configJson.social ?? [],
-    email: configJson.email,
-    avatar: configJson.avatar
+    social: configJson.social ?? []
   };
 };

@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <a :href="href" rel="noopener noreferrer" target="_blank">
+  <a :href="href" rel="noopener noreferrer" >
     <slot></slot>
   </a>
 </template>
@@ -13,5 +13,6 @@ defineProps<{
 <style scoped lang="scss">
 a {
   color: $color-text-secondary;
+  cursor: pointer;
 }
 </style>
