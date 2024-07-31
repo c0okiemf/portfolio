@@ -1,2 +1,4 @@
-domain_name = "mydomain.com"
-bucket_name = "mybucket"
+domain_name = "igordev.win"
+bucket_name = "bucket1"
+bucket_v1_name = "bucket2"
+bucket_v1_subdomain = "v1"
