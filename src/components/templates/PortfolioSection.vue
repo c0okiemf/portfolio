@@ -1,40 +1,30 @@
 <script setup lang="ts">
 import ProjectList from '@/components/ProjectList.vue';
-import ProminentHeading from '@/components/ProminentHeading.vue';
-import { useScrollEffect } from '@/hooks/useScrollEffect';
-
-const { element, style } = useScrollEffect({
-  scale: {
-    min: 0.7,
-    max: 1
-  }
-});
+import { useConfig } from '@/hooks/useConfig';
+const github = useConfig().social.find((link) => link.label === 'GitHub');
 </script>
 
 <template>
-  <div class="portfolio">
-    <div ref="element" :style="style">
-      <ProminentHeading class="heading"> Recent work </ProminentHeading>
+  <section id="projects" class="work-section container" aria-labelledby="work-title">
+    <div class="section-heading reveal">
+      <div>
+        <span class="eyebrow">01 / PERSONAL PROJECTS</span>
+        <h2 id="work-title">
+          Things I've&nbsp;<br class="mobile-break" />
+          <span class="muted-serif">built.</span>
+        </h2>
+      </div>
+      <a
+        v-if="github"
+        class="text-link"
+        :href="github.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        >More on GitHub <v-icon name="bi-arrow-up-right" /><span class="sr-only">
+          (opens in a new tab)</span
+        ></a
+      >
     </div>
     <ProjectList />
-  </div>
+  </section>
 </template>
-
-<style scoped lang="scss">
-.heading {
-  margin: 240px auto 0 auto;
-  width: fit-content;
-  text-align: center;
-  line-height: 0.8;
-
-  @media (max-width: $desktop-breakpoint) {
-    margin-top: 160px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    margin-top: 40px;
-    text-align: left;
-    padding: 0 24px;
-  }
-}
-</style>

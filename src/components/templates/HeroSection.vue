@@ -1,53 +1,78 @@
 <script setup lang="ts">
-import NavBar from '@/components/NavBar.vue';
-import ProminentHeading from '@/components/ProminentHeading.vue';
+function moveGlass(event: PointerEvent) {
+  if (
+    event.pointerType !== 'mouse' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+    return;
+  const element = event.currentTarget as HTMLElement;
+  const bounds = element.getBoundingClientRect();
+  element.style.setProperty(
+    '--tilt-x',
+    `${((event.clientY - bounds.top) / bounds.height - 0.5) * -12}deg`
+  );
+  element.style.setProperty(
+    '--tilt-y',
+    `${((event.clientX - bounds.left) / bounds.width - 0.5) * 12}deg`
+  );
+}
+function resetGlass(event: PointerEvent) {
+  const element = event.currentTarget as HTMLElement;
+  element.style.setProperty('--tilt-x', '0deg');
+  element.style.setProperty('--tilt-y', '0deg');
+}
 </script>
 
 <template>
-  <div class="hero">
-    <div class="hello">
-      <ProminentHeading> I'm Igor </ProminentHeading>
-      <ProminentHeading> Web eng </ProminentHeading>
+  <section id="home" class="hero container" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="status-dot"></span> SENIOR FULLSTACK ENGINEER</span>
+      <h1 id="hero-title">
+        Hi, I'm Igor.<br />I build things<br />for the <span class="serif-word">web.</span>
+      </h1>
+      <p class="hero-description">
+        Web apps, APIs, and the infrastructure behind them.<br class="desktop-break" />
+        Mostly TypeScript, React, and Vue.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#projects"
+          >View projects <v-icon name="bi-arrow-down"
+        /></a>
+        <a class="button button-glass glass" href="#contact"
+          >Let's talk <v-icon name="bi-arrow-up-right"
+        /></a>
+      </div>
+      <div class="hero-note">
+        <span class="tiny-line"></span> The better part of a decade building software.
+      </div>
     </div>
-    <NavBar />
-  </div>
+    <div class="hero-art" aria-hidden="true" @pointermove="moveGlass" @pointerleave="resetGlass">
+      <div class="art-grid"></div>
+      <div class="orb-glow"></div>
+      <div class="sculpture">
+        <div class="glass-orb">
+          <div class="orb-ring ring-one"></div>
+          <div class="orb-ring ring-two"></div>
+          <div class="orb-ring ring-three"></div>
+          <span class="orb-code">&lt;/&gt;</span>
+        </div>
+        <div class="floating-label label-top glass">
+          <span class="mini-icon">✦</span> Frontend & backend
+        </div>
+        <div class="floating-label label-bottom stack-dock glass">
+          <span class="stack-token">TS</span>
+          <span class="stack-token">React/Vue</span>
+          <span class="stack-token">PHP</span>
+          <span class="stack-token">AWS</span>
+        </div>
+        <div class="floating-spark spark-one">✧</div>
+        <div class="floating-spark spark-two">+</div>
+      </div>
+      <span class="art-caption">INTERFACES / APIS / INFRASTRUCTURE</span>
+    </div>
+    <div class="hero-bottom">
+      <span><v-icon name="bi-geo-alt" /> Working remotely · Based in Moldova</span
+      ><a href="#projects">PROJECTS BELOW <v-icon name="bi-arrow-down" /></a>
+    </div>
+  </section>
 </template>
-
-<style scoped lang="scss">
-.hero {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: $hero-padding-desktop-top $hero-padding-desktop-side 0 $hero-padding-desktop-side;
-
-  @media (max-width: $desktop-breakpoint) {
-    padding: $hero-padding-tablet-top $hero-padding-tablet-side 0 $hero-padding-tablet-side;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    flex-direction: column;
-    align-items: start;
-    gap: 32px;
-    padding: $hero-padding-mobile-top $hero-padding-mobile-side 0 $hero-padding-mobile-side;
-  }
-}
-
-.hello {
-  line-height: 1;
-}
-
-.hello h1 {
-  display: inline;
-  vertical-align: baseline;
-  font-size: 210px;
-  vertical-align: top;
-
-  @media (max-width: $desktop-breakpoint) {
-    font-size: 168px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    font-size: 72px;
-  }
-}
-</style>

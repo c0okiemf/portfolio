@@ -1,110 +1,92 @@
 <script setup lang="ts">
-import SuperButton from '@/components/SuperButton.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+const activeSection = ref('home');
+const dark = ref(document.documentElement.dataset.theme === 'dark');
+const sections = [
+  { id: 'home', label: 'Home' },
+  { id: 'projects', label: 'Work' },
+  { id: 'about', label: 'About' },
+  { id: 'contact', label: 'Contact' }
+];
+let scrollFrame = 0;
+let sectionElements: HTMLElement[] = [];
+function updateActiveSection() {
+  scrollFrame = 0;
+  const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+  activeSection.value = atBottom
+    ? 'contact'
+    : sectionElements
+        .filter((element) => element.getBoundingClientRect().top <= window.innerHeight * 0.35)
+        .pop()?.id || 'home';
+}
+function onScroll() {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateActiveSection);
+}
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+let followsSystem = true;
+try {
+  followsSystem = !localStorage.getItem('portfolio-theme');
+} catch {
+  /* Storage is optional. */
+}
+
+function applyTheme(value: boolean) {
+  dark.value = value;
+  document.documentElement.dataset.theme = value ? 'dark' : 'light';
+}
+function toggleTheme() {
+  followsSystem = false;
+  applyTheme(!dark.value);
+  try {
+    localStorage.setItem('portfolio-theme', dark.value ? 'dark' : 'light');
+  } catch {
+    /* Storage is optional. */
   }
-};
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-const observedElement = ref(null);
-const isInView = ref(true);
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      isInView.value = true;
-    } else {
-      isInView.value = false;
-    }
-  });
-});
-
+}
+function onSystemTheme(event: MediaQueryListEvent) {
+  if (followsSystem) applyTheme(event.matches);
+}
 onMounted(() => {
-  if (observedElement.value) {
-    observer.observe(observedElement.value);
-  }
+  systemTheme.addEventListener('change', onSystemTheme);
+  sectionElements = sections.flatMap(({ id }) => {
+    const element = document.getElementById(id);
+    return element ? [element] : [];
+  });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  updateActiveSection();
 });
-
 onUnmounted(() => {
-  if (observedElement.value) {
-    observer.unobserve(observedElement.value);
-  }
+  cancelAnimationFrame(scrollFrame);
+  window.removeEventListener('scroll', onScroll);
+  window.removeEventListener('resize', onScroll);
+  systemTheme.removeEventListener('change', onSystemTheme);
 });
 </script>
 
 <template>
-  <div class="nav" ref="observedElement">
-    <SuperButton @click="() => scrollToSection('projects')"> Projects </SuperButton>
-    <SuperButton @click="() => scrollToSection('contact')"> Contact </SuperButton>
-  </div>
-  <Transition>
-    <div v-if="!isInView" class="fixed-container">
-      <div class="fixed-button">
-        <SuperButton @click="scrollToTop" :is-transparent="true"> Go to Top </SuperButton>
-      </div>
-    </div>
-  </Transition>
+  <header class="site-header container">
+    <a class="wordmark" href="#home" aria-label="Igor Piciughin, home"
+      >igor<span class="wordmark-dot">.</span
+      ><span class="wordmark-caption">fullstack engineer</span></a
+    >
+    <nav class="nav-glass glass" aria-label="Main navigation">
+      <a
+        v-for="section in sections"
+        :key="section.id"
+        :href="`#${section.id}`"
+        :class="{ active: activeSection === section.id }"
+        :aria-current="activeSection === section.id ? 'location' : undefined"
+        >{{ section.label }}</a
+      >
+    </nav>
+    <button
+      class="theme-toggle glass icon-button"
+      @click="toggleTheme"
+      :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <v-icon :name="dark ? 'bi-sun' : 'bi-moon'" />
+    </button>
+  </header>
 </template>
-
-<style scoped lang="scss">
-.nav {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  padding-top: 20px;
-  gap: 16px;
-
-  @media (max-width: $tablet-breakpoint) {
-    flex-direction: row;
-  }
-}
-
-.fixed-container {
-  position: relative;
-  position: fixed;
-  max-width: $max-width;
-  margin: 0 auto;
-  width: 100%;
-  height: 100%;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 1000;
-}
-
-.fixed-button {
-  position: absolute;
-  top: $hero-padding-desktop-top;
-  right: $hero-padding-desktop-side;
-  pointer-events: all;
-
-  @media (max-width: $desktop-breakpoint) {
-    top: $hero-padding-tablet-top;
-    right: $hero-padding-tablet-side;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    top: $hero-padding-mobile-top;
-    right: $hero-padding-mobile-side;
-  }
-}
-
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-</style>

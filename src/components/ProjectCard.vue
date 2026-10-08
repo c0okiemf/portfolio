@@ -1,92 +1,47 @@
 <script setup lang="ts">
-import SuperButton from '@/components/SuperButton.vue';
-import SuperTag from '@/components/SuperTag.vue';
+import { computed } from 'vue';
 import type { Project } from '@/hooks/useConfig';
-import { useScrollEffect } from '@/hooks/useScrollEffect';
-
-defineProps<{
-  project: Project;
-}>();
-
-const { element, style } = useScrollEffect({
-  opacity: { min: 0, max: 1 },
-  translateY: { min: '0px', max: '50px' },
-  threshold: 0.7
-});
+const props = defineProps<{ project: Project; index: number }>();
+const titleParts = computed(() => props.project.title.split(' - '));
 </script>
 
 <template>
-  <div class="project" ref="element" :style="style">
-    <div class="content">
-      <div class="tags">
-        <SuperTag v-for="tag in project.tags" :key="tag">
-          {{ tag }}
-        </SuperTag>
+  <a
+    class="project-card glass reveal"
+    :class="`project-${index}`"
+    :href="project.url"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <div class="project-preview" :class="{ 'portfolio-preview': !project.image }">
+      <span class="preview-label"
+        >{{ String(index + 1).padStart(2, '0') }} /
+        {{ project.tags[project.tags.length - 1] }}</span
+      >
+      <img
+        v-if="project.image"
+        :src="project.image"
+        :alt="`${titleParts[0]} interface preview`"
+        loading="lazy"
+        decoding="async"
+      />
+      <div v-else class="portfolio-mini">
+        <span>igor.</span>
+        <p>I build things<br /><em>for the web.</em></p>
+        <span class="mini-pill">Made with Vue ↗</span>
       </div>
-      <h2>{{ project.title }}</h2>
-      <SuperButton type="inverted" :href="project.url"> View code </SuperButton>
+      <span class="preview-open"><v-icon name="bi-arrow-up-right" /></span>
     </div>
-    <img v-if="project.image" :src="project.image" :alt="project.title" />
-  </div>
+    <div class="project-info">
+      <div class="project-tags">
+        <span v-for="tag in project.tags" :key="tag">{{ tag }}</span>
+      </div>
+      <h3>
+        {{ titleParts[0].replace('...and this very portfolio', 'This very portfolio')
+        }}<v-icon name="bi-arrow-up-right" />
+      </h3>
+      <p>{{ titleParts.slice(1).join(' - ') }}</p>
+      <span class="sr-only">View source code (opens in a new tab)</span>
+    </div>
+  </a>
 </template>
-
-<style scoped lang="scss">
-.project {
-  padding: 64px;
-  display: flex;
-  align-items: center;
-  gap: 80px;
-
-  @media (max-width: $desktop-breakpoint) {
-    flex-direction: column;
-    padding: 64px 40px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    padding: 40px 24px;
-  }
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 3;
-}
-
-.tags {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-h2 {
-  font-size: 80px;
-  color: white;
-
-  @media (max-width: $desktop-breakpoint) {
-    font-size: 56px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    font-size: 51px;
-  }
-}
-
-img {
-  width: 100%;
-  max-height: 800px;
-  object-fit: contain;
-  flex: 2;
-  display: block;
-  overflow: auto;
-
-  @media (max-width: $desktop-breakpoint) {
-    max-height: 970px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    max-height: 452px;
-  }
-}
-</style>

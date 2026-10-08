@@ -1,85 +1,63 @@
 <script setup lang="ts">
 import { useConfig } from '@/hooks/useConfig';
-
 const config = useConfig();
+const skills = [
+  'TypeScript',
+  'React',
+  'Vue',
+  'PHP',
+  'Express',
+  'PostgreSQL',
+  'AWS',
+  'Docker',
+  'Terraform'
+];
 </script>
 
 <template>
-  <div class="intro">
-    <div class="tagline">
-      Crafting digital experiences by blending innovative solutions with elegant design.
+  <section id="about" class="about-section container" aria-labelledby="about-title">
+    <div class="about-photo reveal">
+      <img
+        v-if="config.avatar"
+        :src="config.avatar"
+        alt="Igor Piciughin"
+        loading="lazy"
+        width="400"
+        height="480"
+      />
+      <div class="photo-caption glass"><span class="status-dot"></span> Igor Piciughin</div>
+      <span class="photo-decoration" aria-hidden="true">✳</span>
     </div>
-    <div class="description">
-      I'm a fullstack web engineer specializing in crafting intuitive and efficient web solutions
-      from a user-centered perspective. With over five years of experience, I excel in building and
-      enhancing digital products and platforms. Currently based in Moldova.
+    <div class="about-copy reveal">
+      <span class="eyebrow">02 / ABOUT</span>
+      <h2 id="about-title">I like building<br /><span class="muted-serif">useful stuff.</span></h2>
+      <p>
+        I'm a senior fullstack engineer working full time, remotely from Moldova. I've spent the
+        better part of a decade building web apps, APIs, and the systems that keep them running.
+      </p>
+      <p>
+        My day job has covered messaging systems at Rdcom, booking software at Safara, and payment
+        tools at XanPool. I build interfaces, work on the backend, and handle cloud infrastructure.
+        I'm also used to taking over older code and making it easier to work with.
+      </p>
+      <p>
+        The projects here are my personal work, built outside my day job: music websites, mobile
+        chat, and a local AI tool for Beat Saber. I like having something of my own to work on.
+      </p>
+      <div class="about-principles">
+        <span><v-icon name="bi-code-slash" /> Readable code</span
+        ><span><v-icon name="bi-check-lg" /> Straightforward UI</span>
+      </div>
+      <div class="skill-list" aria-label="Technologies I work with">
+        <span v-for="skill in skills" :key="skill">{{ skill }}</span>
+      </div>
+      <a
+        class="text-link resume-link"
+        href="/resume/Igor-Piciughin.pdf"
+        download="Igor-Piciughin-CV.pdf"
+      >
+        Download CV (PDF) <v-icon name="bi-arrow-down" />
+      </a>
     </div>
-    <img v-if="config.avatar" class="avatar" :src="config.avatar" alt="My photo" />
-  </div>
+  </section>
 </template>
-
-<style scoped lang="scss">
-.intro {
-  background: $color-background-secondary;
-  border-radius: 88px 88px 0 0;
-  padding: 128px 64px;
-  margin-top: 192px;
-
-  @media (max-width: $desktop-breakpoint) {
-    padding: 80px 40px;
-    margin-top: 150px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    padding: 64px 24px;
-    margin-top: 100px;
-  }
-}
-
-.tagline {
-  line-height: 1.2;
-  font-size: 80px;
-  color: $color-text-secondary;
-  max-width: 60%;
-
-  @media (max-width: $desktop-breakpoint) {
-    font-size: 56px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    font-size: 51px;
-    max-width: none;
-  }
-}
-
-.description {
-  margin-top: 152px;
-  max-width: 47%;
-  margin-left: auto;
-  color: $color-text-secondary;
-  font-size: 32px;
-  text-align: end;
-
-  @media (max-width: $desktop-breakpoint) {
-    margin-top: 128px;
-    font-size: 26px;
-  }
-
-  @media (max-width: $tablet-breakpoint) {
-    margin-top: 112px;
-    font-size: 20px;
-    max-width: none;
-    text-align: start;
-  }
-}
-
-.avatar {
-  max-width: 300px;
-  height: 400px;
-  border-radius: 999px;
-  margin: 88px auto 0 auto;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-}
-</style>

@@ -1,55 +1,40 @@
 <script setup lang="ts">
-import AnimatedCorner from '@/components/AnimatedCorner.vue';
-import ContactSection from '@/components/templates/ContactSection.vue';
+import NavBar from '@/components/NavBar.vue';
 import HeroSection from '@/components/templates/HeroSection.vue';
 import IntroSection from '@/components/templates/IntroSection.vue';
 import PortfolioSection from '@/components/templates/PortfolioSection.vue';
-import { ref } from 'vue';
+import ContactSection from '@/components/templates/ContactSection.vue';
+import { onMounted, onUnmounted } from 'vue';
 
-const isTransitioningOut = ref<boolean>(false);
-
-const onCornerButtonClick = () => {
-  isTransitioningOut.value = true;
-};
+let observer: IntersectionObserver | undefined;
+onMounted(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer?.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach((element) => {
+    element.classList.add('will-reveal');
+    observer?.observe(element);
+  });
+});
+onUnmounted(() => observer?.disconnect());
 </script>
 
 <template>
-  <div :class="['outer-wrapper', isTransitioningOut && 'transitioning']">
-    <div :class="['wrapper', isTransitioningOut && 'transitioning']">
-      <AnimatedCorner @on-button-click="onCornerButtonClick" />
-      <div class="page">
-        <HeroSection />
-        <IntroSection />
-        <PortfolioSection />
-        <ContactSection />
-      </div>
-    </div>
-  </div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <NavBar />
+  <main id="main">
+    <HeroSection />
+    <PortfolioSection />
+    <IntroSection />
+    <ContactSection />
+  </main>
 </template>
-
-<style scoped lang="scss">
-.outer-wrapper {
-  width: 100%;
-  background-color: $color-background-main;
-  transition: background-color 0.5s;
-
-  &.transitioning {
-    background-color: black;
-  }
-}
-.wrapper {
-  width: 100%;
-  opacity: 1;
-  transition: opacity 1s;
-
-  &.transitioning {
-    opacity: 0;
-  }
-}
-
-.page {
-  max-width: $max-width;
-  margin: 0 auto;
-  position: relative;
-}
-</style>

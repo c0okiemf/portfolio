@@ -1,105 +1,80 @@
 <script setup lang="ts">
-import SimpleLink from '@/components/SimpleLink.vue';
-import SuperButton from '@/components/SuperButton.vue';
-import MarqueeText from '@/components/SuperMarquee.vue';
+import { onUnmounted, ref } from 'vue';
 import { useConfig } from '@/hooks/useConfig';
-import { useScrollEffect } from '@/hooks/useScrollEffect';
-
 const config = useConfig();
-
-const { element, style } = useScrollEffect({
-  borderRadius: { min: '0px', max: '180px' }
-});
+const copyState = ref<'idle' | 'copied' | 'error'>('idle');
+let resetTimer: ReturnType<typeof setTimeout> | undefined;
+async function copyEmail() {
+  if (!config.email) return;
+  try {
+    await navigator.clipboard.writeText(config.email);
+    copyState.value = 'copied';
+  } catch {
+    copyState.value = 'error';
+  }
+  clearTimeout(resetTimer);
+  resetTimer = setTimeout(() => {
+    copyState.value = 'idle';
+  }, 3500);
+}
+onUnmounted(() => clearTimeout(resetTimer));
 </script>
 
 <template>
-  <div id="contact" ref="element" :style="style">
-    <div class="main">
-      <div class="cta">
-        <h2>Get in touch</h2>
-        <v-icon name="bi-code-slash" />
+  <section id="contact" class="contact-section container" aria-labelledby="contact-title">
+    <div class="contact-panel glass reveal">
+      <span class="eyebrow">03 / CONTACT</span>
+      <h2 id="contact-title">Got a project?<br /><span class="serif-word">Let's talk.</span></h2>
+      <p>
+        Send me an email about work, a project,<br class="desktop-break" />
+        or something you're building.
+      </p>
+      <div v-if="config.email" class="contact-actions">
+        <a class="button button-primary" :href="`mailto:${config.email}`"
+          >Email me <v-icon name="bi-arrow-up-right"
+        /></a>
+        <button class="button button-glass glass" @click="copyEmail">
+          <v-icon :name="copyState === 'copied' ? 'bi-check-lg' : 'bi-clipboard'" />{{
+            copyState === 'copied' ? 'Copied!' : 'Copy email'
+          }}
+        </button>
       </div>
-      <div class="links">
-        <SuperButton
-          v-for="link in config.social"
-          type="secondary"
-          :href="link.url"
-          :key="link.url"
-        >
-          {{ link.label }}
-        </SuperButton>
-      </div>
+      <a v-if="config.email" class="email-link" :href="`mailto:${config.email}`">{{
+        config.email
+      }}</a>
+      <p class="copy-status" role="status">
+        {{
+          copyState === 'error'
+            ? 'Could not copy. You can select the email address above.'
+            : copyState === 'copied'
+              ? 'Email address copied to clipboard.'
+              : ''
+        }}
+      </p>
+      <span class="contact-orbit orbit-a" aria-hidden="true"></span
+      ><span class="contact-orbit orbit-b" aria-hidden="true"></span>
     </div>
-    <MarqueeText v-if="config.email" :text="config.email" class="marquee">
-      <SimpleLink :href="`mailto:${config.email}`">
-        {{ config.email }}
-      </SimpleLink>
-    </MarqueeText>
-  </div>
+    <footer class="site-footer">
+      <a class="wordmark" href="#home">igor<span class="wordmark-dot">.</span></a>
+      <span class="footer-note"
+        >Built with Vue & TypeScript.
+        <span>© {{ new Date().getFullYear() }} Igor Piciughin</span></span
+      >
+      <div class="footer-links">
+        <a
+          v-for="link in config.social"
+          :key="link.url"
+          :href="link.url"
+          :target="link.url.startsWith('https:') ? '_blank' : undefined"
+          rel="noopener noreferrer"
+          >{{ link.label }} <v-icon name="bi-arrow-up-right" /><span
+            v-if="link.url.startsWith('https:')"
+            class="sr-only"
+          >
+            (opens in a new tab)</span
+          ></a
+        ><a v-if="config.v1url" :href="config.v1url">V1 <v-icon name="bi-arrow-up-right" /></a>
+      </div>
+    </footer>
+  </section>
 </template>
-
-<style scoped lang="scss">
-#contact {
-  background: $color-background-secondary;
-  padding: 64px;
-
-  @media (max-width: $tablet-breakpoint) {
-    padding: 24px;
-  }
-}
-
-.main {
-  padding: 64px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.cta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  h2 {
-    color: $color-text-secondary;
-    font-size: 80px;
-
-    @media (max-width: $desktop-breakpoint) {
-      font-size: 56px;
-    }
-
-    @media (max-width: $tablet-breakpoint) {
-      font-size: 51px;
-      width: 70%;
-    }
-  }
-
-  svg {
-    width: 100px;
-    height: 100px;
-    color: black;
-
-    @media (max-width: $tablet-breakpoint) {
-      display: none;
-    }
-  }
-}
-
-.links {
-  display: flex;
-  gap: 12px;
-
-  @media (max-width: $tablet-breakpoint) {
-    flex-direction: column;
-  }
-}
-
-.marquee {
-  font-size: 300px;
-  color: $color-text-secondary;
-
-  @media (max-width: $tablet-breakpoint) {
-    font-size: 200px;
-  }
-}
-</style>

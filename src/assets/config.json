@@ -1,6 +1,12 @@
 {
   "projects": [
     {
+      "tags": ["Python", "Tauri", "AI"],
+      "title": "osu2bs - turn any song into Beat Saber maps with local AI",
+      "url": "https://github.com/c0okiemf/osu2bs",
+      "image": "/img/osu2bs.png"
+    },
+    {
       "tags": ["TypeScript", "React", "Music"],
       "title": "Configurable Music Label Website Template - easy to use and customize",
       "url": "https://github.com/c0okiemf/music-website",
@@ -43,6 +49,6 @@
     }
   ],
   "email": "igorpichugindev@proton.me",
-  "avatar": "/img/avatar.jpg",
+  "avatar": "/img/avatar-upscaled.webp",
   "v1url": "https://v1.igordev.win"
 }
